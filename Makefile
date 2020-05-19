@@ -3,7 +3,7 @@
 # OS information
 
 AUTHOR      = Simon Chaykin
-VERSION     = 0.0.1
+VERSION     = 0.0.2
 LICENSE     = WTFPL
 
 # Makefiel configuration
@@ -56,6 +56,9 @@ OBJS        := $(patsubst %.asm, %.o, $(OBJS))
 
 SOURCE_DIRS := boot init kernel
 
+CRTBEGIN    := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtbegin.o`
+CRTEND      := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtend.o`
+
 all: chkcross directories kernel grub iso run
 
 chkcross:
@@ -69,7 +72,7 @@ directories:
 	mkdir -p $(patsubst %,"$(BUILD_DIR)/objs/%",$(SOURCE_DIRS))
 
 kernel: $(OBJS)
-	$(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS))
+	$(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) $(CRTBEGIN) $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(CRTEND)
 
 grub:
 	echo "menuentry \"ChaykinOS $(VERSION)\" {" > $(BUILD_DIR)/iso/boot/grub/grub.cfg
