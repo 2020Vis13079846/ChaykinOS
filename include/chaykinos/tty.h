@@ -13,6 +13,8 @@ void tty_setcolor(uint8_t);
 void tty_clear(void);
 void tty_putchar(char);
 void tty_writestring(char*);
+void tty_vprintf(const char*, va_list);
+void tty_printf(const char*, ...);
 
 #ifdef __cplusplus
 }
