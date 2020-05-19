@@ -11,9 +11,9 @@
 
 void start_kernel(void) {
 	tty_init();
-	tty_writestring("TTY Initialized.\n");
+	tty_printf("TTY Initialized.\n");
 }
 
 void main(void) {
-	tty_writestring("Hello, world!\n");
+	tty_printf("Hello, world!\n");
 }
