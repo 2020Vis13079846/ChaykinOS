@@ -80,3 +80,103 @@ void tty_write(char* data, size_t length) {
 void tty_writestring(char* data) {
 	tty_write(data, strlen(data));
 }
+
+void tty_putuint(uint32_t num) {
+	unsigned int n, d = 1000000000, index = 0;
+	char* str = 0;
+	while ((num/d == 0) && (d >= 10))
+		d /= 10;
+	n = num;
+	while (d >= 10) {
+		str[index++] = ((char)((int)'0' + n/d));
+		n = n % d;
+		d /= 10;
+	}
+	str[index++] = ((char)((int)'0' + n));
+	str[index] = 0;
+	tty_writestring(str);
+}
+
+void tty_putint(int32_t num) {
+	if (num >= 0) {
+		tty_putuint(num);
+	} else {
+		tty_putchar('-');
+		tty_putuint(-num);
+	}
+}
+
+void tty_puthex(uint32_t num) {
+	char* hex = "0123456789abcdef";
+	unsigned int n, d = 0x10000000, index = 2;
+	char* str = "0x";
+	while ((num/d == 0) && (d >= 0x10))
+		d /= 0x10;
+	n = num;
+	while (d >= 0xf) {
+		str[index++] = hex[n/d];
+		n = n % d;
+		d /= 0x10;
+	}
+	str[index++] = hex[n];
+	str[index] = 0;
+	tty_writestring(str);
+}
+
+void tty_putoct(uint32_t num) {
+	unsigned int n, d = 2097152, index = 0;
+	char* str = 0;
+	while ((num/d == 0) && (d >= 10))
+		d /= 8;
+	n = num;
+	while (d >= 8) {
+		str[index++] = ((char)((int)'0' + n/d));
+		n = n % d;
+		d /= 8;
+	}
+	str[index++] = ((char)((int)'0' + n));
+	str[index] = 0;
+	tty_writestring(str);
+}
+
+void tty_vprintf(const char* format, va_list args) {
+	int i = 0;
+	while (format[i]) {
+		if (format[i] == '%') {
+			i++;
+			switch (format[i]) {
+				case 'c':
+					tty_putchar(va_arg(args, int));
+					break;
+				case 's':
+					tty_writestring(va_arg(args, char*));
+					break;
+				case 'd':
+				case 'i':
+					tty_putint(va_arg(args, int));
+					break;
+				case 'u':
+					tty_putuint(va_arg(args, uint32_t));
+					break;
+				case 'x':
+					tty_puthex(va_arg(args, uint32_t));
+					break;
+				case 'o':
+					tty_putoct(va_arg(args, uint32_t));
+					break;
+				default:
+					tty_putchar(format[i]);
+			}
+		} else {
+			tty_putchar(format[i]);
+		}
+		i++;
+	}
+}
+
+void tty_printf(const char* format, ...) {
+	va_list args;
+	va_start(args, format);
+	tty_vprintf(format, args);
+	va_end(args);
+}
