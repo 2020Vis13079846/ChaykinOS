@@ -28,6 +28,10 @@ _start:
 	; Set up the C code stack.
 	mov esp, stack_top
 
+	; Call the global constructors.
+	extern _init
+	call _init
+
 	; Running kernel.
 	extern start_kernel
 	call start_kernel
