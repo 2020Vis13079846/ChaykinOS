@@ -1,15 +1,10 @@
 #include <chaykinos/tty.h>
+#include <string.h>
 
 size_t tty_row = 0;
 size_t tty_column = 0;
 uint8_t tty_color;
 uint16_t* tty_buffer;
-
-size_t strlen(char* str) {
-	size_t len = 0;
-	while (str[++len]);
-	return len;
-}
 
 void tty_init(void) {
 	tty_color = vga_entry_color(VGA_LIGHT_GREY, VGA_BLACK);
