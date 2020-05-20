@@ -3,7 +3,7 @@
 # OS information
 
 AUTHOR      = Simon Chaykin
-VERSION     = 0.0.3
+VERSION     = 0.0.4
 LICENSE     = WTFPL
 
 # Makefiel configuration
@@ -38,7 +38,7 @@ GRUB        = grub-mkrescue
 
 # Compilers' and emulators' flags
 
-CFLAGS      = -g -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR)
+CFLAGS      = -g -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk
 GASFLAGS    =
 NASMFLAGS   = -f $(BINFORMAT)32
 EMUFLAGS    = -m 256
