@@ -62,42 +62,42 @@ CRTEND      := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtend.o`
 all: chkcross directories kernel grub iso run
 
 chkcross:
-	chmod +x ./tools/chkcross.sh
-	./tools/chkcross.sh $(CROSS)/bin $(ARCH)-$(BINFORMAT)
+	@chmod +x ./tools/chkcross.sh
+	@./tools/chkcross.sh $(CROSS)/bin $(ARCH)-$(BINFORMAT)
 
 directories:
-	mkdir -p $(BUILD_DIR)/bin
-	mkdir -p $(BUILD_DIR)/iso/boot/grub
-	mkdir -p $(BUILD_DIR)/releases
-	mkdir -p $(patsubst %,"$(BUILD_DIR)/objs/%",$(SOURCE_DIRS))
+	@mkdir -p $(BUILD_DIR)/bin
+	@mkdir -p $(BUILD_DIR)/iso/boot/grub
+	@mkdir -p $(BUILD_DIR)/releases
+	@mkdir -p $(patsubst %,"$(BUILD_DIR)/objs/%",$(SOURCE_DIRS))
 
 kernel: $(OBJS)
-	$(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) $(CRTBEGIN) $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(CRTEND)
+	@$(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) $(CRTBEGIN) $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(CRTEND)
 
 grub:
-	echo "menuentry \"ChaykinOS $(VERSION)\" {" > $(BUILD_DIR)/iso/boot/grub/grub.cfg
-	echo "	multiboot /boot/kernel.elf" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
-	echo "	boot" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
-	echo "}" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
+	@echo "menuentry \"ChaykinOS $(VERSION)\" {" > $(BUILD_DIR)/iso/boot/grub/grub.cfg
+	@echo "	multiboot /boot/kernel.elf" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
+	@echo "	boot" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
+	@echo "}" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
 
 iso: grub kernel
-	cp $(BUILD_DIR)/bin/$(BINFILE) $(BUILD_DIR)/iso/boot/$(BINFILE)
-	$(GRUB) -o $(BUILD_DIR)/releases/$(ISOFILE) $(BUILD_DIR)/iso
-	cp $(BUILD_DIR)/releases/$(ISOFILE) $(ISOFILE)
+	@cp $(BUILD_DIR)/bin/$(BINFILE) $(BUILD_DIR)/iso/boot/$(BINFILE)
+	@$(GRUB) -o $(BUILD_DIR)/releases/$(ISOFILE) $(BUILD_DIR)/iso
+	@cp $(BUILD_DIR)/releases/$(ISOFILE) $(ISOFILE)
 
 run: iso
-	$(EMU) -cdrom $(ISOFILE) $(EMUFLAGS)
+	@$(EMU) -cdrom $(ISOFILE) $(EMUFLAGS)
 
 clean:
-	rm -rf $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(BUILD_DIR)
+	@rm -rf $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(BUILD_DIR)
 
 # Compilation
 
 %.o: %.c
-	$(CC) -c $< -o $(BUILD_DIR)/objs/$@ $(CFLAGS)
+	@$(CC) -c $< -o $(BUILD_DIR)/objs/$@ $(CFLAGS)
 
 %.o: %.s
-	$(GAS) $< -o $(BUILD_DIR)/objs/$@ $(GASFLAGS)
+	@$(GAS) $< -o $(BUILD_DIR)/objs/$@ $(GASFLAGS)
 
 %.o: %.asm
-	$(NASM) $< -o $(BUILD_DIR)/objs/$@ $(NASMFLAGS)
+	@$(NASM) $< -o $(BUILD_DIR)/objs/$@ $(NASMFLAGS)
