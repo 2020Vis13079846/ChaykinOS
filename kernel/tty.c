@@ -108,8 +108,8 @@ void tty_putint(int32_t num) {
 
 void tty_puthex(uint32_t num) {
 	char* hex = "0123456789abcdef";
-	unsigned int n, d = 0x10000000, index = 2;
-	char* str = "0x";
+	unsigned int n, d = 0x10000000, index = 0;
+	char* str = 0;
 	while ((num/d == 0) && (d >= 0x10))
 		d /= 0x10;
 	n = num;
