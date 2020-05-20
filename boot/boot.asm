@@ -31,6 +31,11 @@ _start:
 	; Call the global constructors.
 	extern _init
 	call _init
+	
+	; GRUB puts Multiboot structure and magic number as
+	; arguments to main.
+	push ebx ; Multiboot structure.
+	push eax ; Magic number.
 
 	; Running kernel.
 	extern start_kernel
