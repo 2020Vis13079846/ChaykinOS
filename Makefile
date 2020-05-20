@@ -3,7 +3,7 @@
 # OS information
 
 AUTHOR      = Simon Chaykin
-VERSION     = 0.0.5
+VERSION     = 0.0.6
 LICENSE     = WTFPL
 
 # Makefiel configuration
