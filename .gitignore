@@ -1,0 +1,26 @@
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.libk.o
+*.elf
+
+# Libraies
+*.a
+
+# Executables
+*.bin
+*.hex
+
+# Shared objects
+*.so
+*.so.*
+
+# Debug files
+*.dbg
+*.log
+
+# Production
+build/
+*.iso
