@@ -28,7 +28,7 @@ void init_kernel(void) {
 	asm volatile("cli");
 	pit_init();
 	tty_printf("PIT Initialized.\n");
-	asm volatile("sti")
+	asm volatile("sti");
 }
 
 void main(uint32_t magic_number, multiboot_info_t* mbt) {
