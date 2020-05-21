@@ -11,18 +11,31 @@
 #include <chaykinos/panic.h>
 #include <chaykinos/multiboot.h>
 #include <chaykinos/gdt.h>
+#include <chaykinos/idt.h>
+
+extern void pit_init(void);
 
 void start_kernel(void) {
 	tty_init();
 	tty_printf("TTY Initialized.\n");
 	gdt_init();
 	tty_printf("GDT Initialized.\n");
+	idt_init();
+	tty_printf("IDT Initialized.\n");
+}
+
+void init_kernel(void) {
+	asm volatile("cli");
+	pit_init();
+	tty_printf("PIT Initialized.\n");
+	asm volatile("sti")
 }
 
 void main(uint32_t magic_number, multiboot_info_t* mbt) {
 	if (magic_number != MULTIBOOT_BOOTLOADER_MAGIC) {
 		panic("Invalid magic number: 0x%x\n", magic_number);
 	}
+	init_kernel();
 	tty_printf("flags = 0x%x\n", mbt->flags);
 	if (CHECK_FLAG(mbt->flags, 0))
 		tty_printf("mem_lower = %u KB, mem_upper = %u KB\n", mbt->mem_lower, mbt->mem_upper);
