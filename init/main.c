@@ -25,17 +25,16 @@ void start_kernel(void) {
 }
 
 void init_kernel(void) {
+	pmm_init(mbt);
+	tty_printf("Physical Memory Manager Initialized.\n");
 	asm volatile("cli");
 	pit_init();
 	tty_printf("PIT Initialized.\n");
 	asm volatile("sti");
 }
 
-void main(uint32_t magic_number, multiboot_info_t* mbt) {
-	if (magic_number != MULTIBOOT_BOOTLOADER_MAGIC) {
-		panic("Invalid magic number: 0x%x\n", magic_number);
-	}
-	init_kernel();
+void multiboot_info(multiboot_info_t* mbt) {
+	tty_printf("Multiboot information:\n");
 	tty_printf("flags = 0x%x\n", mbt->flags);
 	if (CHECK_FLAG(mbt->flags, 0))
 		tty_printf("mem_lower = %u KB, mem_upper = %u KB\n", mbt->mem_lower, mbt->mem_upper);
@@ -71,5 +70,15 @@ void main(uint32_t magic_number, multiboot_info_t* mbt) {
 		}
 		tty_printf("Install Memory: %u KB\n", memory_installed / 1024);
 	}
+}
+
+void main(uint32_t magic_number, multiboot_info_t* mbt) {
+	tty_printf("ChaykinOS kernel is loaded.\n");
+	if (magic_number != MULTIBOOT_BOOTLOADER_MAGIC) {
+		panic("Invalid magic number: 0x%x\n", magic_number);
+	}
+	init_kernel(mbt);
+	multiboot_info(mbt);
+	tty_printf("ChaykinOS is initialized.\n");
 	tty_printf("Hello, world!\n");
 }
