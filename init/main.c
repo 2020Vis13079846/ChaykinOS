@@ -12,6 +12,7 @@
 #include <chaykinos/multiboot.h>
 #include <chaykinos/gdt.h>
 #include <chaykinos/idt.h>
+#include <chaykinos/pmm.h>
 
 extern void pit_init(void);
 
