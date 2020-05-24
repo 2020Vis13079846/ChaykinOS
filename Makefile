@@ -3,7 +3,7 @@
 # OS information
 
 AUTHOR      = Simon Chaykin
-VERSION     = 0.6.2
+VERSION     = 0.7.1
 LICENSE     = WTFPL
 
 # Makefiel configuration
@@ -54,7 +54,7 @@ OBJS        := $(patsubst %.c, %.o, $(SOURCES))
 OBJS        := $(patsubst %.s, %.o, $(OBJS))
 OBJS        := $(patsubst %.asm, %.o, $(OBJS))
 
-SOURCE_DIRS := boot init kernel lib
+SOURCE_DIRS := boot init kernel lib mm
 
 CRTBEGIN    := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtbegin.o`
 CRTEND      := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtend.o`
