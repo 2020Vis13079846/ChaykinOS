@@ -25,7 +25,7 @@ void start_kernel(void) {
 	idt_init();
 	tty_printf("IDT Initialized.\n");
 	A20_init();
-	tty_printf("A20 Initialized.\n");
+	tty_printf("A20 line is on.\n");
 }
 
 void init_kernel(multiboot_info_t* mbt) {
