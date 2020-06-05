@@ -25,7 +25,7 @@ void start_kernel(void) {
 	tty_printf("IDT Initialized.\n");
 }
 
-void init_kernel(void) {
+void init_kernel(multiboot_info_t* mbt) {
 	pmm_init(mbt);
 	tty_printf("Physical Memory Manager Initialized.\n");
 	asm volatile("cli");
