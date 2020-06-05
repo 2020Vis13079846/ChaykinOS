@@ -54,7 +54,7 @@ OBJS        := $(patsubst %.c, %.o, $(SOURCES))
 OBJS        := $(patsubst %.s, %.o, $(OBJS))
 OBJS        := $(patsubst %.asm, %.o, $(OBJS))
 
-SOURCE_DIRS := boot init kernel lib mm
+SOURCE_DIRS := boot init kernel lib mm drivers
 
 CRTBEGIN    := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtbegin.o`
 CRTEND      := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtend.o`
