@@ -230,4 +230,6 @@ typedef struct multiboot_apm_info {
 	uint16_t dseg_len;
 } multiboot_apm_info_t;
 
+void multiboot_info(multiboot_info_t*);
+
 #endif
