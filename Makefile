@@ -22,27 +22,25 @@ GRUB_CONFIG = grub.cfg
 ISOFILE     = ChaykinOS-$(VERSION).iso
 BINFILE     = kernel.$(BINFORMAT)
 
-# Cross-Compiler settings
+# Compiler settings
 
-ARCH        = i686
 BINFORMAT   = elf
-CROSS       = ~/opt/cross
 
 # Compilers and emulators
 
-CC          = $(CROSS)/bin/$(ARCH)-$(BINFORMAT)-gcc
-GAS         = $(CROSS)/bin/$(ARCH)-$(BINFORMAT)-as # AT&T-syntax assembler
+CC          = gcc
+GAS         = as # AT&T-syntax assembler
 NASM        = nasm # Intel-syntax
 EMU         = qemu-system-i386
 GRUB        = grub-mkrescue
 
 # Compilers' and emulators' flags
 
-CFLAGS      = -g -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk
-GASFLAGS    =
+CFLAGS      = -m32 -g -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk
+GASFLAGS    = --32
 NASMFLAGS   = -f $(BINFORMAT)32
 EMUFLAGS    = -m 256
-LDFLAGS     = -T$(LSCRIPT) -ffreestanding -nostdlib -lgcc -I $(INCLUDE_DIR) -g
+LDFLAGS     = -m32 -T$(LSCRIPT) -ffreestanding -nostdlib -lgcc -I $(INCLUDE_DIR) -g
 
 # Sources
 
@@ -59,11 +57,7 @@ SOURCE_DIRS := boot init kernel lib mm drivers
 CRTBEGIN    := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtbegin.o`
 CRTEND      := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtend.o`
 
-all: chkcross directories kernel grub iso run
-
-chkcross:
-	@chmod +x ./tools/chkcross.sh
-	@./tools/chkcross.sh $(CROSS)/bin $(ARCH)-$(BINFORMAT)
+all: directories kernel grub iso run
 
 directories:
 	@mkdir -p $(BUILD_DIR)/bin
