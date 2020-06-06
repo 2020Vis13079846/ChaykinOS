@@ -20,7 +20,7 @@ bool unregister_interrupt_handler(int index) {
 }
 
 char* exceptions[32] = {
-	"Divide-by-zeror Error",
+	"Divide-by-zero Error",
 	"Debug",
 	"Non-maskable Interrupt",
 	"Breakpoint",
