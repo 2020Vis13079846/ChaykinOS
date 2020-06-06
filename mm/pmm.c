@@ -102,6 +102,10 @@ void pmm_memory_map(multiboot_info_t* mbt) {
 	}
 }
 
+void pmm_update_bitmap(uint32_t addr) {
+	phys_memory_bitmap = (uint32_t*) addr;
+}
+
 void pmm_init(multiboot_info_t* mbt) {
 	pmm_memory_map(mbt);
 	phys_block_count = phys_installed_memory_size / 4096;
