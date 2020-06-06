@@ -66,7 +66,7 @@ _start:
 	push ebx ; Multiboot structure.
 	push eax ; Magic number.
 
-	; Calling early kernel initialization.
+	; Call early kernel initialization.
 	extern start_kernel
 	call start_kernel
 
