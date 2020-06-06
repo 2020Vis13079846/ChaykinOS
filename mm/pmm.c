@@ -3,14 +3,7 @@
 #include <chaykinos/multiboot.h>
 #include <string.h>
 
-#define KERNEL_START_PADDR ((uint32_t)&kernel_phys_start)
-#define KERNEL_END_PADDR ((uint32_t)&kernel_phys_end)
-#define KERNEL_SIZE (KERNEL_END_PADDR - KERNEL_START_PADDR)
-
-extern uint32_t kernel_phys_start, kernel_phys_end;
-
-uint32_t kernel_phys_map_start;
-uint32_t kernel_phys_map_end;
+uint32_t kernel_phys_map_start, kernel_phys_map_end;
 
 uint32_t* phys_memory_bitmap = (uint32_t*)&kernel_phys_end;
 uint32_t phys_block_count = 0;
@@ -113,7 +106,7 @@ void pmm_init(multiboot_info_t* mbt) {
 	memset(phys_memory_bitmap, 0xff, phys_block_count / 8);
 
 	pmm_free_memory(mbt);
-	pmm_chunk_alloc(KERNEL_START_PADDR, KERNEL_SIZE);
+	pmm_chunk_alloc((uint32_t)&kernel_phys_start, (uint32_t)&kernel_phys_end-(uint32_t)&kernel_phys_start);
 	pmm_chunk_alloc(*phys_memory_bitmap, phys_block_count);
 	kernel_phys_map_start = (uint32_t)phys_memory_bitmap;
 	kernel_phys_map_end = kernel_phys_map_start + (phys_block_count / 8);
