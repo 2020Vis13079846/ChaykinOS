@@ -34,6 +34,7 @@ char* exceptions[32] = {
 	"Segment Not Present",
 	"Stack-Segment Fault",
 	"General Protection Fault",
+	"Page Fault",
 	"Reserved",
 	"x87 Floating-Point Exception",
 	"Allignment Check",
