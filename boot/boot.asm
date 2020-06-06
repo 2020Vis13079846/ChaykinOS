@@ -26,7 +26,8 @@ section .data
 align 0x1000
 global _boot_page_directory
 _boot_page_directory:
-	; This page directory entry identity-maps the first 4MB of the 32-bit physical address space.	dd 0x00000083
+	; This page directory entry identity-maps the first 4MB of the 32-bit physical address space.
+	dd 0x00000083
 	times (KERNEL_PAGE_NUMBER - 1) dd 0
 	; This page directory entry defines a 4MB page containing the kernel.
 	dd 0x00000083
