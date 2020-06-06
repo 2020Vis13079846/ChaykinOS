@@ -10,7 +10,7 @@ void panic(char* error, ...) {
 	tty_vprintf(error, args);
 	va_end(args);
 	tty_printf("Registers:\n");
-	tty_printf("eax = %x ebx = %x ecx = %x edx = %x esi = %x edi = %x esp = %x ebp = %x\n", eax, ebx, ecx, edx, esi, edi, esp, ebp);
+	tty_printf("eax = 0x%x ebx = 0x%x ecx = 0x%x edx = 0x%x esi = 0x%x edi = 0x%x esp = 0x%x ebp = 0x%x\n", eax, ebx, ecx, edx, esi, edi, esp, ebp);
 	tty_printf("Halting.\n");
 	asm volatile("hlt");
 }
