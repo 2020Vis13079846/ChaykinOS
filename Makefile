@@ -6,7 +6,7 @@ AUTHOR      = Simon Chaykin
 VERSION     = 0.7.2
 LICENSE     = WTFPL
 
-# Makefiel configuration
+# Makefile configuration
 
 BOOT_DIR    = boot
 INIT_DIR    = init
