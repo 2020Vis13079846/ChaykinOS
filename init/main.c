@@ -14,10 +14,11 @@
 #include <chaykinos/idt.h>
 #include <chaykinos/pmm.h>
 #include <chaykinos/pit.h>
+#include <asm/serial.h>
 
 extern void A20_init(void);
 
-void start_kernel(void) {
+void start_kernel(multiboot_info_t* mbt) {
 	tty_init();
 	tty_printf("TTY Initialized.\n");
 	gdt_init();
@@ -26,14 +27,17 @@ void start_kernel(void) {
 	tty_printf("IDT Initialized.\n");
 	A20_init();
 	tty_printf("A20 line is on.\n");
-}
-
-void init_kernel(multiboot_info_t* mbt) {
+	for (int i = 0; i < 4; i++) {
+		serial_port_init(ports[i]);
+		tty_printf("COM%d Initialized.\n", i+1);
+	}
 	pmm_init(mbt);
 	tty_printf("Physical Memory Manager Initialized.\n");
 	asm volatile("cli");
 	pit_init();
 	tty_printf("PIT Initialized.\n");
+	keyboard_init();
+	tty_printf("Keyboard Initialized.\n");
 	asm volatile("sti");
 }
 
@@ -42,7 +46,9 @@ void main(uint32_t magic_number, multiboot_info_t* mbt) {
 	if (magic_number != MULTIBOOT_BOOTLOADER_MAGIC) {
 		panic("Invalid magic number: 0x%x\n", magic_number);
 	}
-	init_kernel(mbt);
 	tty_printf("ChaykinOS is initialized.\n");
 	tty_printf("Hello, world!\n");
+	while (1) {
+		keyboard_getch();
+	}
 }
