@@ -67,9 +67,16 @@ _start:
 	push ebx ; Multiboot structure.
 	push eax ; Magic number.
 
+	; Push multiboot structure to the stack top as 
+	; argument to start_kernel.
+	push ebx ; Multiboot structure.
+
 	; Call early kernel initialization.
 	extern start_kernel
 	call start_kernel
+
+	; Pop used argument.
+	pop ebx
 
 	; Enter protected mode.
 	mov ecx, cr0
