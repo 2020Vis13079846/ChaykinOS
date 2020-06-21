@@ -1,5 +1,4 @@
 /*
-
 	Welcome to ChaykinOS source code!
 	ChaykinOS is an OS from scratch.
 	It's developed by Simon Chaykin
@@ -14,6 +13,7 @@
 #include <chaykinos/idt.h>
 #include <chaykinos/pmm.h>
 #include <chaykinos/pit.h>
+#include <chaykinos/keyboard.h>
 #include <asm/serial.h>
 
 extern void A20_init(void);
@@ -41,14 +41,13 @@ void start_kernel(multiboot_info_t* mbt) {
 	asm volatile("sti");
 }
 
-void main(uint32_t magic_number, multiboot_info_t* mbt) {
+void main(uint32_t magic_number, __attribute__((unused)) multiboot_info_t* mbt) {
 	tty_printf("ChaykinOS kernel is loaded.\n");
 	if (magic_number != MULTIBOOT_BOOTLOADER_MAGIC) {
 		panic("Invalid magic number: 0x%x\n", magic_number);
 	}
 	tty_printf("ChaykinOS is initialized.\n");
 	tty_printf("Hello, world!\n");
-	while (1) {
-		keyboard_getch();
-	}
+	char* buf;
+	keyboard_gets(buf, 100);
 }
