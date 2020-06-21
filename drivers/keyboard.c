@@ -1,16 +1,7 @@
+#include <chaykinos/keyboard.h>
 #include <chaykinos/interrupts.h>
 #include <chaykinos/tty.h>
-
-typedef struct {
-	uint8_t scancode;
-	char keycode;
-} char_t;
-
-typedef struct {
-	uint8_t exists;
-	uint8_t release;
-	char keycode;
-} kbd_char_t;
+#include <asm/ports.h>
 
 char_t keyboard_default[] = {
 	{0x01, 0}, {0x3b, 0}, {0x3c, 0}, {0x3d, 0}, {0x3e, 0}, {0x3f, 0}, {0x40, 0}, {0x41, 0}, {0x42, 0}, {0x43, 0}, {0x44, 0}, {0x57, 0}, {0x58, 0}, {0x46, 0}, {0x53, '\b'},
@@ -23,7 +14,7 @@ char_t keyboard_default[] = {
 
 static uint32_t kdb_in = 0, kbd_out = 0;
 static kbd_char_t keyboard_buffer[256];
-volatile bool irq_fried = false;
+volatile bool irq_fried = false, feed = true;
 
 void keyboard_wait_irq(void) {
 	while (!irq_fried);
@@ -39,7 +30,7 @@ char scancode_to_keycode(kbd_char_t ch) {
 	return 0;
 }
 
-void keyboard_handler(registers_t* r) {
+void keyboard_handler(__attribute__((unused)) registers_t* r) {
 	static kbd_char_t ch = {1, 0, 0};
 	irq_fried = true;
 	uint8_t scancode = inb(0x60);
@@ -59,15 +50,45 @@ void keyboard_handler(registers_t* r) {
 	}
 }
 
-uint8_t keyboard_getch(void) {
+uint8_t keyboard_getchar(void) {
 	uint8_t ret = 0;
 	while (!ret) {
 		if (kdb_in == kbd_out)
 			keyboard_wait_irq();
 		ret = scancode_to_keycode((kdb_in <= kbd_out) ? (kbd_char_t){0, 0, 0} : keyboard_buffer[(kbd_out++) % 256]);
 	}
-	tty_putchar(ret);
+	if (feed)
+		tty_putchar(ret);
 	return ret;
+}
+
+size_t keyboard_gets(char* buf, size_t n) {
+	uint32_t ch = 0, i = 0;
+	int fb = feed;
+	feed = 0;
+	while (1) {
+		ch = keyboard_getchar();
+		if (ch == '\b') {
+			if (i > 0) {
+				if (fb)
+					tty_putchar(ch);
+				buf[--i] = 0;
+			}
+			continue;
+		}
+		if (i < n) {
+			if (fb)
+				tty_putchar(ch);
+			if (ch == '\n') {
+				buf[i] = 0;
+				return i;
+			}
+			buf[i++] = ch;
+		} else {
+			buf[i] = 0;
+		}
+	}
+	feed = fb;
 }
 
 void keyboard_init(void) {
