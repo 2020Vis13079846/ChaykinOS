@@ -3,7 +3,7 @@
 # OS information
 
 AUTHOR      = Simon Chaykin
-VERSION     = 0.7.2
+VERSION     = 0.7.3
 LICENSE     = WTFPL
 
 # Makefile configuration
