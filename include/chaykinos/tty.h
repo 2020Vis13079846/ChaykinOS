@@ -16,6 +16,9 @@ void tty_putchar(char);
 void tty_writestring(char*);
 void tty_vprintf(const char*, va_list);
 void tty_printf(const char*, ...);
+void tty_enable_cursor(uint8_t, uint8_t);
+void tty_disable_cursor(void);
+void tty_update_cursor(int, int);
 
 #ifdef __cplusplus
 }
