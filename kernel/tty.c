@@ -1,4 +1,5 @@
 #include <chaykinos/tty.h>
+#include <asm/ports.h>
 #include <string.h>
 
 size_t tty_row = 0;
@@ -15,6 +16,7 @@ void tty_init(void) {
 			tty_buffer[index] = vga_entry(' ', tty_color);
 		}
 	}
+	tty_enable_cursor(14, 15);
 }
 
 void tty_clear(void) {
@@ -70,6 +72,7 @@ void tty_putchar(char c) {
 			tty_row--;
 		}
 	}
+	tty_update_cursor(tty_column, tty_row);
 }
 
 void tty_write(char* data, size_t length) {
@@ -179,4 +182,40 @@ void tty_printf(const char* format, ...) {
 	va_start(args, format);
 	tty_vprintf(format, args);
 	va_end(args);
+}
+
+void tty_enable_cursor(uint8_t start, uint8_t end) {
+	outb(0x3d4, 0x0a);
+	outb(0x3d5, (inb(0x3d5) & 0xc0) | start);
+	outb(0x3d4, 0x0b);
+	outb(0x3d5, (inb(0x3d5) & 0xe0) | end);
+}
+
+void tty_disable_cursor(void) {
+	outb(0x3d4, 0x0a);
+	outb(0x3d5, 0x20);
+}
+
+void tty_update_cursor(int x, int y) {
+	uint16_t pos = y * VGA_WIDTH + x;
+	outb(0x3d4, 0x0f);
+	outb(0x3d5, (uint8_t)(pos & 0xff));
+	outb(0x3d4, 0x0e);
+	outb(0x3d5, (uint8_t)((pos >> 8) & 0xff));
+}
+
+/*
+ *
+ * y = pos / VGA_WIDTH;
+ * x = pos % VGA_WIDTH;
+ *
+ */
+
+uint16_t tty_get_cursor_position(void) {
+	uint16_t pos = 0;
+	outb(0x3d4, 0x0f);
+	pos |= inb(0x3d5);
+	outb(0x3d4, 0x0e);
+	pos |= ((uint16_t)inb(0x3d5)) << 8;
+	return pos;
 }
