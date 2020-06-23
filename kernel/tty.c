@@ -43,8 +43,10 @@ void tty_setcolor(uint8_t color) {
 }
 
 void tty_putentry(char c, uint8_t color, size_t x, size_t y) {
-	size_t index = y * VGA_WIDTH + x;
-	tty_buffer[index] = vga_entry(c, color);
+	for (size_t i = VGA_WIDTH * VGA_HEIGHT; i >= (y * VGA_WIDTH + x)+1; i--) {
+		tty_buffer[i] = tty_buffer[i-1];
+	}
+	tty_buffer[(y * VGA_WIDTH + x)] = vga_entry(c, color);
 }
 
 void tty_putchar(char c) {
