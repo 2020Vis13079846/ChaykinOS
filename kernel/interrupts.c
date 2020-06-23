@@ -56,6 +56,9 @@ char* exceptions[32] = {
 
 void fault_handler(registers_t* r) {
 	tty_printf("System Exception: %s. System Halted!\n", exceptions[r->idt_index]);
+	if (interrupt_handlers[r->idt_index] != 0) {
+		interrupt_handlers[r->idt_index](r);
+	}
 	for (;;) asm("hlt");
 }
 
