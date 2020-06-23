@@ -63,7 +63,7 @@ void tty_putchar(char c) {
 		} else {
 			tty_column-=2;
 		}
-		tty_putentry(' ', tty_color, tty_column+1, tty_row);
+		tty_buffer[(tty_row * VGA_WIDTH + tty_column+1)] = ' ';
 	} else {
 		tty_putentry(c, tty_color, tty_column, tty_row);
 	}
