@@ -21,6 +21,7 @@ LSCRIPT     = link.ld
 GRUB_CONFIG = grub.cfg
 ISOFILE     = ChaykinOS-$(VERSION).iso
 BINFILE     = kernel.$(BINFORMAT)
+LOGFILE     = chaykinos.log
 
 # Compiler settings
 
@@ -39,7 +40,7 @@ GRUB        = grub-mkrescue
 CFLAGS      = -m32 -g -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk
 GASFLAGS    = --32
 NASMFLAGS   = -f $(BINFORMAT)32
-EMUFLAGS    = -m 256
+EMUFLAGS    = -m 256 -serial file:$(LOGFILE) -nic none
 LDFLAGS     = -m32 -T$(LSCRIPT) -ffreestanding -nostdlib -lgcc -I $(INCLUDE_DIR) -g
 
 # Sources
