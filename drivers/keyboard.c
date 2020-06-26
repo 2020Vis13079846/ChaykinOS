@@ -15,6 +15,7 @@ char_t keyboard_default[] = {
 static uint32_t kdb_in = 0, kbd_out = 0;
 static kbd_char_t keyboard_buffer[256];
 volatile bool irq_fried = false, feed = true;
+volatile size_t index = 0, length = 0;
 
 void keyboard_wait_irq(void) {
 	while (!irq_fried);
@@ -63,29 +64,42 @@ uint8_t keyboard_getchar(void) {
 }
 
 size_t keyboard_gets(char* buf, size_t n) {
-	uint32_t ch = 0, i = 0;
+	char buffer[n];
+	for (size_t i = 0; i < n; i++)
+		buffer[i] = 0;
+	memset(buf, 0, n);
+	index = 0, length = 0;
+	uint32_t ch = 0;
 	int fb = feed;
 	feed = 0;
 	while (1) {
 		ch = keyboard_getchar();
 		if (ch == '\b') {
-			if (i > 0) {
+			if (length > 0) {
 				if (fb)
 					tty_putchar(ch);
-				buf[--i] = 0;
+				buffer[--index] = 0;
+				length--;
 			}
 			continue;
 		}
-		if (i < n) {
+		if (index < n) {
 			if (fb)
 				tty_putchar(ch);
 			if (ch == '\n') {
-				buf[i] = 0;
-				return i;
+				buffer[length] = 0;
+				for (size_t i = 0; i < n; i++) {
+					buf[i] = buffer[i];
+				}
+				return length;
 			}
-			buf[i++] = ch;
+			for (size_t j = n; j > index-1; j--) {
+				buffer[j] = buffer[j-1];
+			}
+			buffer[index++] = ch;
+			length++;
 		} else {
-			buf[i] = 0;
+			buffer[index] = 0;
 		}
 	}
 	feed = fb;
