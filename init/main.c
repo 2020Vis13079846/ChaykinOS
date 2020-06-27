@@ -50,4 +50,5 @@ void main(uint32_t magic_number, __attribute__((unused)) multiboot_info_t *mbt) 
 	}
 	tty_printf("ChaykinOS is initialized.\n");
 	tty_printf("Hello, world!\n");
+	asm volatile("int $0xE");
 }
