@@ -1,4 +1,6 @@
 #include <chaykinos/interrupts.h>
+#include <chaykinos/idt.h>
+#include <chaykinos/tty.h>
 #include <asm/ports.h>
 
 static interrupt_handler_t interrupt_handlers[IDT_NUM_ENTRIES];
@@ -19,7 +21,7 @@ bool unregister_interrupt_handler(int index) {
 	return true;
 }
 
-char* exceptions[32] = {
+char *exceptions[32] = {
 	"Divide-by-zero Error",
 	"Debug",
 	"Non-maskable Interrupt",
@@ -54,7 +56,7 @@ char* exceptions[32] = {
 	"Reserved"
 };
 
-void fault_handler(registers_t* r) {
+void fault_handler(registers_t *r) {
 	tty_printf("System Exception: %s. System Halted!\n", exceptions[r->idt_index]);
 	if (interrupt_handlers[r->idt_index] != 0) {
 		interrupt_handlers[r->idt_index](r);
@@ -62,7 +64,7 @@ void fault_handler(registers_t* r) {
 	for (;;) asm("hlt");
 }
 
-void irq_handler(registers_t* r) {
+void irq_handler(registers_t *r) {
 	interrupt_handler_t handler = interrupt_handlers[r->idt_index];
 	if (handler)
 		handler(r);
@@ -71,7 +73,7 @@ void irq_handler(registers_t* r) {
 	outb(0x20, 0x20);
 }
 
-void run_interrupt_handler(registers_t* r) {
+void run_interrupt_handler(registers_t *r) {
 	size_t idt_index = r->idt_index;
 	if (idt_index < 32) {
 		fault_handler(r);
