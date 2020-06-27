@@ -6,18 +6,18 @@ void debug_putchar(char c) {
 	serial_write(ports[0], c);
 }
 
-void debug_write(char* data, size_t length) {
+void debug_write(char *data, size_t length) {
 	for (size_t i = 0; i < length; i++)
 		debug_putchar(data[i]);
 }
 
-void debug_writestring(char* data) {
+void debug_writestring(char *data) {
 	debug_write(data, strlen(data));
 }
 
 void debug_putuint(uint32_t num) {
 	unsigned int n, d = 1000000000, index = 0;
-	char* str = 0;
+	char *str = 0;
 	while ((num/d == 0) && (d >= 10))
 		d /= 10;
 	n = num;
@@ -41,9 +41,9 @@ void debug_putint(int32_t num) {
 }
 
 void debug_puthex(uint32_t num) {
-	char* hex = "0123456789abcdef";
+	char *hex = "0123456789abcdef";
 	unsigned int n, d = 0x10000000, index = 0;
-	char* str = 0;
+	char *str = 0;
 	while ((num/d == 0) && (d >= 0x10))
 		d /= 0x10;
 	n = num;
@@ -59,7 +59,7 @@ void debug_puthex(uint32_t num) {
 
 void debug_putoct(uint32_t num) {
 	unsigned int n, d = 2097152, index = 0;
-	char* str = 0;
+	char *str = 0;
 	while ((num/d == 0) && (d >= 10))
 		d /= 8;
 	n = num;
@@ -73,7 +73,7 @@ void debug_putoct(uint32_t num) {
 	debug_writestring(str);
 }
 
-void debug_vprintf(const char* format, va_list args) {
+void debug_vprintf(const char *format, va_list args) {
 	int i = 0;
 	while (format[i]) {
 		if (format[i] == '%') {
@@ -108,7 +108,7 @@ void debug_vprintf(const char* format, va_list args) {
 	}
 }
 
-void debug_printf(const char* format, ...) {
+void debug_printf(const char *format, ...) {
 	va_list args;
 	va_start(args, format);
 	debug_vprintf(format, args);
