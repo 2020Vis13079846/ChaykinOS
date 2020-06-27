@@ -22,7 +22,7 @@ typedef struct {
 void keyboard_init(void);
 
 uint8_t keyboard_getchar(void);
-size_t keyboard_gets(char*, size_t);
+size_t keyboard_gets(char *, size_t);
 
 #ifdef __cplusplus
 }
