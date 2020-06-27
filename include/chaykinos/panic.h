@@ -1,7 +1,7 @@
 #ifndef _CHAYKIN_OS_PANIC_H_
 #define _CHAYKIN_OS_PANIC_H_ 1
 
-#include <chaykinos/tty.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
