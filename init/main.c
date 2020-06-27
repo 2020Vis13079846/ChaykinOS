@@ -33,6 +33,8 @@ void start_kernel(multiboot_info_t *mbt) {
 	}
 	pmm_init(mbt);
 	tty_printf("Physical Memory Manager Initialized.\n");
+	vmm_init();
+	tty_printf("Virtual Memory Manager Initialized.\n");
 	asm volatile("cli");
 	pit_init();
 	tty_printf("PIT Initialized.\n");
