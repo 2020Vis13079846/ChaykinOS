@@ -1,0 +1,19 @@
+language: c
+
+compiler: gcc
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-multilib
+      - gcc
+      - grub-pc-bin
+      - xorriso
+      - nasm
+
+jobs:
+  include:
+    - stage: "Build ChaykinOS"
+      script: make
