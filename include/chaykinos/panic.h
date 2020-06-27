@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-void panic(char*, ...);
+void panic(char *, ...);
 
 #ifdef __cplusplus
 }
