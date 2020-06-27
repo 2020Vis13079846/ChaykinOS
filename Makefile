@@ -58,7 +58,7 @@ SOURCE_DIRS := boot init kernel lib mm drivers
 CRTBEGIN    := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtbegin.o`
 CRTEND      := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtend.o`
 
-all: directories kernel grub iso run
+all: directories kernel grub iso
 
 directories:
 	@mkdir -p $(BUILD_DIR)/bin
