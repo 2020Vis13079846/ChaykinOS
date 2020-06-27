@@ -2,6 +2,7 @@
 #include <chaykinos/interrupts.h>
 #include <chaykinos/tty.h>
 #include <asm/ports.h>
+#include <string.h>
 
 char_t keyboard_default[] = {
 	{0x01, 0}, {0x3b, 0}, {0x3c, 0}, {0x3d, 0}, {0x3e, 0}, {0x3f, 0}, {0x40, 0}, {0x41, 0}, {0x42, 0}, {0x43, 0}, {0x44, 0}, {0x57, 0}, {0x58, 0}, {0x46, 0}, {0x53, '\b'},
@@ -31,7 +32,7 @@ char scancode_to_keycode(kbd_char_t ch) {
 	return 0;
 }
 
-void keyboard_handler(__attribute__((unused)) registers_t* r) {
+void keyboard_handler(__attribute__((unused)) registers_t *r) {
 	static kbd_char_t ch = {1, 0, 0};
 	irq_fried = true;
 	uint8_t scancode = inb(0x60);
@@ -63,7 +64,7 @@ uint8_t keyboard_getchar(void) {
 	return ret;
 }
 
-size_t keyboard_gets(char* buf, size_t n) {
+size_t keyboard_gets(char *buf, size_t n) {
 	char buffer[n];
 	for (size_t i = 0; i < n; i++)
 		buffer[i] = 0;
