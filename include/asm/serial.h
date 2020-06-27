@@ -9,10 +9,10 @@ extern "C" {
 
 extern uint16_t ports[];
 
-void serial_port_init(uint16_t port);
+void serial_port_init(uint16_t);
 
-char serial_read(uint16_t port);
-void serial_write(uint16_t port, char ch);
+char serial_read(uint16_t);
+void serial_write(uint16_t, char);
 
 #ifdef __cplusplus
 }
