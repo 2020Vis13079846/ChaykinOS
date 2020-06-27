@@ -1,6 +1,7 @@
 #include <chaykinos/panic.h>
+#include <chaykinos/tty.h>
 
-void panic(char* error, ...) {
+void panic(char *error, ...) {
 	va_list args;
 	va_start(args, error);
 	asm volatile("cli");
