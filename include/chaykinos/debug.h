@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 void debug_putchar(char);
-void debug_writestring(char*);
-void debug_vprintf(const char*, va_list);
-void debug_printf(const char*, ...);
+void debug_writestring(char *);
+void debug_vprintf(const char *, va_list);
+void debug_printf(const char *, ...);
 
 #ifdef __cplusplus
 }
