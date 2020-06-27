@@ -22,7 +22,7 @@ typedef struct {
 	uint32_t base;
 } __attribute__((packed)) idt_ptr_t;
 
-extern void idt_flush(idt_ptr_t*);
+extern void idt_flush(idt_ptr_t *);
 
 void idt_init(void);
 
