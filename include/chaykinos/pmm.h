@@ -11,7 +11,7 @@ extern "C" {
 extern uint32_t kernel_phys_start, kernel_phys_end;
 extern uint32_t kernel_phys_map_start, kernel_phys_map_end;
 
-void pmm_init(multiboot_info_t*);
+void pmm_init(multiboot_info_t *);
 
 int pmm_find_free_block(void);
 uint32_t pmm_block_alloc(void);
