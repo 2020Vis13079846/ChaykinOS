@@ -1,11 +1,10 @@
+#include <chaykinos/pit.h>
 #include <chaykinos/interrupts.h>
 #include <asm/ports.h>
 
-#define PIT_FREQUENCY 100
-
 static uint64_t ticks = 0;
 
-static void pit_handler(__attribute__((unused)) registers_t* r) {
+static void pit_handler(__attribute__((unused)) registers_t *r) {
 	ticks++;
 }
 
