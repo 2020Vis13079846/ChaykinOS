@@ -24,7 +24,7 @@ typedef struct {
 	uint8_t base_high;
 } __attribute__((packed)) gdt_entry_t;
 
-extern void gdt_flush(gdt_ptr_t*);
+extern void gdt_flush(gdt_ptr_t *);
 
 void gdt_init(void);
 
