@@ -1,11 +1,12 @@
 #include <chaykinos/tty.h>
+#include <chaykinos/vga.h>
 #include <asm/ports.h>
 #include <string.h>
 
-size_t tty_row = 0;
-size_t tty_column = 0;
+volatile size_t tty_row = 0;
+volatile size_t tty_column = 0;
 uint8_t tty_color;
-uint16_t* tty_buffer;
+uint16_t *tty_buffer;
 
 void tty_init(void) {
 	tty_color = vga_entry_color(VGA_LIGHT_GREY, VGA_BLACK);
@@ -43,10 +44,17 @@ void tty_setcolor(uint8_t color) {
 }
 
 void tty_putentry(char c, uint8_t color, size_t x, size_t y) {
+	//size_t index = y * VGA_WIDTH + x;
+	//tty_buffer[index] = vga_entry(c, color);
+	//tty_buffer[(y * VGA_WIDTH + x)] = vga_entry(c, color);
 	for (size_t i = VGA_WIDTH * VGA_HEIGHT; i >= (y * VGA_WIDTH + x)+1; i--) {
-		tty_buffer[i] = tty_buffer[i-1];
+		tty_buffer[i] = tty_buffer[i-1]; //vga_entry(tty_buffer[i-1] & 0xff, color);
+		//debug_printf("tty_buffer[%d] = %d; tty_buffer[%d-1] = %d; ch = '%c'\n", i, tty_buffer[i], i, tty_buffer[i-1], tty_buffer[i-1] & 0xff);
 	}
 	tty_buffer[(y * VGA_WIDTH + x)] = vga_entry(c, color);
+	//tty_buffer = tmp;
+	//memcpy(tty_buffer+2, tty_buffer, VGA_WIDTH * VGA_HEIGHT);
+	//tty_buffer = tmp;
 }
 
 void tty_putchar(char c) {
@@ -63,6 +71,7 @@ void tty_putchar(char c) {
 		} else {
 			tty_column-=2;
 		}
+		//tty_putentry(' ', tty_color, tty_column+1, tty_row);
 		tty_buffer[(tty_row * VGA_WIDTH + tty_column+1)] = ' ';
 	} else {
 		tty_putentry(c, tty_color, tty_column, tty_row);
@@ -77,18 +86,18 @@ void tty_putchar(char c) {
 	tty_update_cursor(tty_column, tty_row);
 }
 
-void tty_write(char* data, size_t length) {
+void tty_write(char *data, size_t length) {
 	for (size_t i = 0; i < length; i++)
 		tty_putchar(data[i]);
 }
 
-void tty_writestring(char* data) {
+void tty_writestring(char *data) {
 	tty_write(data, strlen(data));
 }
 
 void tty_putuint(uint32_t num) {
 	unsigned int n, d = 1000000000, index = 0;
-	char* str = 0;
+	char *str = 0;
 	while ((num/d == 0) && (d >= 10))
 		d /= 10;
 	n = num;
@@ -112,9 +121,9 @@ void tty_putint(int32_t num) {
 }
 
 void tty_puthex(uint32_t num) {
-	char* hex = "0123456789abcdef";
+	char *hex = "0123456789abcdef";
 	unsigned int n, d = 0x10000000, index = 0;
-	char* str = 0;
+	char *str = 0;
 	while ((num/d == 0) && (d >= 0x10))
 		d /= 0x10;
 	n = num;
@@ -130,7 +139,7 @@ void tty_puthex(uint32_t num) {
 
 void tty_putoct(uint32_t num) {
 	unsigned int n, d = 2097152, index = 0;
-	char* str = 0;
+	char *str = 0;
 	while ((num/d == 0) && (d >= 10))
 		d /= 8;
 	n = num;
@@ -144,7 +153,7 @@ void tty_putoct(uint32_t num) {
 	tty_writestring(str);
 }
 
-void tty_vprintf(const char* format, va_list args) {
+void tty_vprintf(const char *format, va_list args) {
 	int i = 0;
 	while (format[i]) {
 		if (format[i] == '%') {
@@ -179,7 +188,7 @@ void tty_vprintf(const char* format, va_list args) {
 	}
 }
 
-void tty_printf(const char* format, ...) {
+void tty_printf(const char *format, ...) {
 	va_list args;
 	va_start(args, format);
 	tty_vprintf(format, args);
@@ -205,13 +214,6 @@ void tty_update_cursor(int x, int y) {
 	outb(0x3d4, 0x0e);
 	outb(0x3d5, (uint8_t)((pos >> 8) & 0xff));
 }
-
-/*
- *
- * y = pos / VGA_WIDTH;
- * x = pos % VGA_WIDTH;
- *
- */
 
 uint16_t tty_get_cursor_position(void) {
 	uint16_t pos = 0;
