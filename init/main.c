@@ -18,7 +18,7 @@
 
 extern void A20_init(void);
 
-void start_kernel(multiboot_info_t* mbt) {
+void start_kernel(multiboot_info_t *mbt) {
 	tty_init();
 	tty_printf("TTY Initialized.\n");
 	gdt_init();
@@ -41,13 +41,11 @@ void start_kernel(multiboot_info_t* mbt) {
 	asm volatile("sti");
 }
 
-void main(uint32_t magic_number, __attribute__((unused)) multiboot_info_t* mbt) {
+void main(uint32_t magic_number, __attribute__((unused)) multiboot_info_t *mbt) {
 	tty_printf("ChaykinOS kernel is loaded.\n");
 	if (magic_number != MULTIBOOT_BOOTLOADER_MAGIC) {
 		panic("Invalid magic number: 0x%x\n", magic_number);
 	}
 	tty_printf("ChaykinOS is initialized.\n");
 	tty_printf("Hello, world!\n");
-	char* buf = 0;
-	keyboard_gets(buf, 100);
 }
