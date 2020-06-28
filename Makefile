@@ -37,11 +37,11 @@ GRUB        = grub-mkrescue
 
 # Compilers' and emulators' flags
 
-CFLAGS      = -m32 -g -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk
+CFLAGS      = -m32 -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk
 GASFLAGS    = --32
 NASMFLAGS   = -f $(BINFORMAT)32
 EMUFLAGS    = -m 256 -serial file:$(LOGFILE) -nic none
-LDFLAGS     = -m32 -T$(LSCRIPT) -ffreestanding -nostdlib -lgcc -I $(INCLUDE_DIR) -g
+LDFLAGS     = -m32 -T$(LSCRIPT) -ffreestanding -nostdlib -lgcc -I $(INCLUDE_DIR)
 
 # Sources
 
