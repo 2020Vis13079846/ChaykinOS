@@ -9,7 +9,7 @@ page_directory_t *kernel_directory;
 void page_fault(__attribute__((unused)) registers_t *r) {
 	uint32_t faulting_address;
 	asm volatile("mov %%cr2, %0" : "=r" (faulting_address));
-	panic("Page fault at addr 0x0x%x\n", faulting_address);
+	panic("Page fault at addr 0x%x\n", faulting_address);
 }
 
 int vmm_page_alloc(uint32_t virtual_address) {
