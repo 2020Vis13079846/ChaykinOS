@@ -37,7 +37,7 @@ GRUB        = grub-mkrescue
 
 # Compilers' and emulators' flags
 
-CFLAGS      = -m32 -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk
+CFLAGS      = -m32 -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk -w
 GASFLAGS    = --32
 NASMFLAGS   = -f $(BINFORMAT)32
 EMUFLAGS    = -m 256 -serial file:$(LOGFILE) -nic none
@@ -77,7 +77,7 @@ grub:
 
 iso: grub kernel
 	@cp $(BUILD_DIR)/bin/$(BINFILE) $(BUILD_DIR)/iso/boot/$(BINFILE)
-	@$(GRUB) -o $(BUILD_DIR)/releases/$(ISOFILE) $(BUILD_DIR)/iso
+	@$(GRUB) -o $(BUILD_DIR)/releases/$(ISOFILE) $(BUILD_DIR)/iso &> /dev/null
 	@cp $(BUILD_DIR)/releases/$(ISOFILE) $(ISOFILE)
 
 run: iso
