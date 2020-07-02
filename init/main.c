@@ -7,6 +7,7 @@
 */
 
 #include <chaykinos/tty.h>
+#include <chaykinos/nmi.h>
 #include <chaykinos/panic.h>
 #include <chaykinos/multiboot.h>
 #include <chaykinos/gdt.h>
@@ -25,6 +26,8 @@ void start_kernel(multiboot_info_t *mbt) {
 	tty_printf("GDT Initialized.\n");
 	idt_init();
 	tty_printf("IDT Initialized.\n");
+	nmi_enable();
+	tty_printf("NMI Enabled.\n");
 	A20_init();
 	tty_printf("A20 line is on.\n");
 	for (int i = 0; i < 4; i++) {
