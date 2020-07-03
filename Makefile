@@ -63,7 +63,6 @@ all: directories kernel grub iso
 directories:
 	@mkdir -p $(BUILD_DIR)/bin
 	@mkdir -p $(BUILD_DIR)/iso/boot/grub
-	@mkdir -p $(BUILD_DIR)/releases
 	@mkdir -p $(patsubst %,"$(BUILD_DIR)/objs/%",$(SOURCE_DIRS))
 
 kernel: $(OBJS)
@@ -77,7 +76,7 @@ grub:
 
 iso: grub kernel
 	@cp $(BUILD_DIR)/bin/$(BINFILE) $(BUILD_DIR)/iso/boot/$(BINFILE)
-	@$(GRUB) -o $(BUILD_DIR)/releases/$(ISOFILE) $(BUILD_DIR)/iso &> /dev/null && cp ./$(BUILD_DIR)/releases/$(ISOFILE) .
+	@$(GRUB) -o $(ISOFILE) $(BUILD_DIR)/iso &> /dev/null
 
 run: iso
 	@$(EMU) -cdrom $(ISOFILE) $(EMUFLAGS)
