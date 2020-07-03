@@ -67,7 +67,7 @@ directories:
 	@mkdir -p $(patsubst %,"$(BUILD_DIR)/objs/%",$(SOURCE_DIRS))
 
 kernel: $(OBJS)
-	@$(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) $(CRTBEGIN) $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(CRTEND)
+	@$(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) "$(CRTBEGIN)" $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) "$(CRTEND)"
 
 grub:
 	@echo "menuentry \"ChaykinOS $(VERSION)\" {" > $(BUILD_DIR)/iso/boot/grub/grub.cfg
