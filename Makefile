@@ -77,8 +77,7 @@ grub:
 
 iso: grub kernel
 	@cp $(BUILD_DIR)/bin/$(BINFILE) $(BUILD_DIR)/iso/boot/$(BINFILE)
-	@$(GRUB) -o $(BUILD_DIR)/releases/$(ISOFILE) $(BUILD_DIR)/iso &> /dev/null
-	@$(GRUB) -o $(ISOFILE) $(BUILD_DIR)/iso &> /dev/null
+	@$(GRUB) -o $(BUILD_DIR)/releases/$(ISOFILE) $(BUILD_DIR)/iso &> /dev/null && cp ./$(BUILD_DIR)/releases/$(ISOFILE) .
 
 run: iso
 	@$(EMU) -cdrom $(ISOFILE) $(EMUFLAGS)
