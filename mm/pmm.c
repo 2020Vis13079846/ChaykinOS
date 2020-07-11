@@ -5,7 +5,7 @@
 
 uint32_t kernel_phys_map_start, kernel_phys_map_end;
 
-uint32_t* phys_memory_bitmap = (uint32_t*)&kernel_phys_end;
+uint32_t *phys_memory_bitmap = (uint32_t*)&kernel_phys_end;
 uint32_t phys_block_count = 0;
 uint32_t phys_used_block_count = 0;
 
