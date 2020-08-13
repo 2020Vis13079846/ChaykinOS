@@ -3,7 +3,7 @@
 #include <string.h>
 
 void debug_putchar(char c) {
-	serial_write(ports[0], c);
+	serial_write(0x3f8, c);
 }
 
 void debug_write(char *data, size_t length) {
@@ -17,7 +17,7 @@ void debug_writestring(char *data) {
 
 void debug_putuint(uint32_t num) {
 	unsigned int n, d = 1000000000, index = 0;
-	char *str = 0;
+	char *str = pmm_block_alloc();
 	while ((num/d == 0) && (d >= 10))
 		d /= 10;
 	n = num;
@@ -29,6 +29,7 @@ void debug_putuint(uint32_t num) {
 	str[index++] = ((char)((int)'0' + n));
 	str[index] = 0;
 	debug_writestring(str);
+	pmm_block_free(str);
 }
 
 void debug_putint(int32_t num) {

@@ -17,6 +17,7 @@ void tty_init(void) {
 			tty_buffer[index] = vga_entry(' ', tty_color);
 		}
 	}
+	memset(tty_buffer, 0, VGA_WIDTH * VGA_HEIGHT);
 	tty_enable_cursor(14, 15);
 }
 
@@ -29,6 +30,7 @@ void tty_clear(void) {
 			tty_buffer[index] = vga_entry(' ', tty_color);
 		}
 	}
+	memset(tty_buffer, 0, VGA_WIDTH * VGA_HEIGHT);
 }
 
 void tty_scroll(void) {
@@ -44,17 +46,13 @@ void tty_setcolor(uint8_t color) {
 }
 
 void tty_putentry(char c, uint8_t color, size_t x, size_t y) {
-	//size_t index = y * VGA_WIDTH + x;
-	//tty_buffer[index] = vga_entry(c, color);
-	//tty_buffer[(y * VGA_WIDTH + x)] = vga_entry(c, color);
-	for (size_t i = VGA_WIDTH * VGA_HEIGHT; i >= (y * VGA_WIDTH + x)+1; i--) {
-		tty_buffer[i] = tty_buffer[i-1]; //vga_entry(tty_buffer[i-1] & 0xff, color);
-		//debug_printf("tty_buffer[%d] = %d; tty_buffer[%d-1] = %d; ch = '%c'\n", i, tty_buffer[i], i, tty_buffer[i-1], tty_buffer[i-1] & 0xff);
+	size_t index = y * VGA_WIDTH + x;
+	if (tty_buffer[index+1] != 0) {
+		for (size_t i = VGA_WIDTH * VGA_HEIGHT; i > index; i--) {
+			tty_buffer[i] = tty_buffer[i-1];
+		}
 	}
-	tty_buffer[(y * VGA_WIDTH + x)] = vga_entry(c, color);
-	//tty_buffer = tmp;
-	//memcpy(tty_buffer+2, tty_buffer, VGA_WIDTH * VGA_HEIGHT);
-	//tty_buffer = tmp;
+	tty_buffer[index] = vga_entry(c, color);
 }
 
 void tty_putchar(char c) {
@@ -69,10 +67,8 @@ void tty_putchar(char c) {
 			}
 			tty_column = VGA_WIDTH-2;
 		} else {
-			tty_column-=2;
+			tty_column -= 2;
 		}
-		//tty_putentry(' ', tty_color, tty_column+1, tty_row);
-		tty_buffer[(tty_row * VGA_WIDTH + tty_column+1)] = ' ';
 	} else {
 		tty_putentry(c, tty_color, tty_column, tty_row);
 	}
