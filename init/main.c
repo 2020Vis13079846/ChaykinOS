@@ -7,16 +7,16 @@
 */
 
 #include <chaykinos/tty.h>
-#include <chaykinos/nmi.h>
-#include <chaykinos/panic.h>
-#include <chaykinos/multiboot.h>
 #include <chaykinos/gdt.h>
 #include <chaykinos/idt.h>
+#include <chaykinos/nmi.h>
 #include <chaykinos/pmm.h>
+#include <chaykinos/vmm.h>
 #include <chaykinos/pit.h>
+#include <chaykinos/panic.h>
 #include <chaykinos/keyboard.h>
+#include <chaykinos/multiboot.h>
 #include <asm/serial.h>
-#include <chaykinos/vga.h>
 
 extern void A20_init(void);
 

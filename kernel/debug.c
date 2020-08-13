@@ -1,4 +1,5 @@
 #include <chaykinos/debug.h>
+#include <chaykinos/pmm.h>
 #include <asm/serial.h>
 #include <string.h>
 
@@ -17,7 +18,7 @@ void debug_writestring(char *data) {
 
 void debug_putuint(uint32_t num) {
 	unsigned int n, d = 1000000000, index = 0;
-	char *str = pmm_block_alloc();
+	char *str = (char*)pmm_block_alloc();
 	while ((num/d == 0) && (d >= 10))
 		d /= 10;
 	n = num;
@@ -29,7 +30,7 @@ void debug_putuint(uint32_t num) {
 	str[index++] = ((char)((int)'0' + n));
 	str[index] = 0;
 	debug_writestring(str);
-	pmm_block_free(str);
+	pmm_block_free((uint32_t)str);
 }
 
 void debug_putint(int32_t num) {
