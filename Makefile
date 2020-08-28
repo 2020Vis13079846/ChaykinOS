@@ -42,7 +42,7 @@ LDFLAGS     = -m32 -T$(LSCRIPT) -ffreestanding -nostdlib -lgcc -I $(INCLUDE_DIR)
 
 # Sources
 
-SOURCES     += $(shell find -name "*.c" -type f -print)
+SOURCES     += $(shell find -name "*.c" -not -path "./membrane/*" -print -type f)
 SOURCES     += $(shell find -name "*.s" -type f -print)
 SOURCES     += $(shell find -name "*.asm" -type f -print)
 
@@ -55,7 +55,8 @@ SOURCE_DIRS := boot init kernel lib mm drivers
 CRTBEGIN    := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtbegin.o`
 CRTEND      := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtend.o`
 
-all: directories kernel grub iso
+all: #directories kernel grub iso
+	@echo $(SOURCES)
 
 directories:
 	@mkdir -p $(BUILD_DIR)/bin
