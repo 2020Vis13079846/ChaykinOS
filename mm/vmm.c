@@ -8,7 +8,7 @@ page_directory_t *kernel_directory;
 
 void page_fault(__attribute__((unused)) registers_t *r) {
 	uint32_t faulting_address;
-	asm volatile("mov %%cr2, %0" : "=r" (faulting_address));
+	__asm__ volatile("mov %%cr2, %0" : "=r" (faulting_address));
 	panic("Page fault at addr 0x%x\n", faulting_address);
 }
 
@@ -28,8 +28,8 @@ void vmm_page_free(uint32_t virtual_address) {
 	}
 	uint32_t block = *table & 0x7FFFF000;
 	if (block) {
-  		pmm_block_free(block);
-  	}
+  	pmm_block_free(block);
+  }
 	*table &= ~1;
 }
 
@@ -62,13 +62,13 @@ void vmm_page_map(uint32_t physical_address, uint32_t virtual_address) {
 	}
 	uint32_t *table = (uint32_t *)(0xFFC00000 + (TEMP_PAGE_ADDR >> 12) * 4);
 	*table = ((*table & ~0x7FFFF000) | physical_address) | 3;
-	asm volatile("invlpg (%0)" : : "b"(virtual_address) : "memory");
+	__asm__ volatile("invlpg (%0)" : : "b"(virtual_address) : "memory");
 }
 
 uint32_t vmm_temp_page_map(uint32_t physical_address) {
 	uint32_t *table = (uint32_t*)(0xFFC00000 + (TEMP_PAGE_ADDR >> 12) * 4);
 	*table = ((*table & ~0x7FFFF000) | ((physical_address) & -4096)) | 3;
-	asm volatile("invlpg %0" :: "m" (*(uint32_t *)TEMP_PAGE_ADDR) : "memory" );
+	__asm__ volatile("invlpg %0" :: "m" (*(uint32_t *)TEMP_PAGE_ADDR) : "memory" );
 	return TEMP_PAGE_ADDR;
 }
 

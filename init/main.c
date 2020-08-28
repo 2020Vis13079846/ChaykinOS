@@ -39,12 +39,12 @@ void start_kernel(multiboot_info_t *mbt) {
 		serial_port_init(ports[i]);
 		tty_printf("COM%d Initialized.\n", i+1);
 	}
-	asm volatile("cli");
+	__asm__ volatile("cli");
 	pit_init();
 	tty_printf("PIT Initialized.\n");
 	keyboard_init();
 	tty_printf("Keyboard Initialized.\n");
-	asm volatile("sti");
+	__asm__ volatile("sti");
 }
 
 int main(uint32_t magic_number, __attribute__((unused)) multiboot_info_t *mbt) {
@@ -54,6 +54,5 @@ int main(uint32_t magic_number, __attribute__((unused)) multiboot_info_t *mbt) {
 	}
 	tty_printf("ChaykinOS is initialized.\n");
 	tty_printf("Hello, world!\n");
-	asm volatile("int $0xE");
 	return 0;
 }

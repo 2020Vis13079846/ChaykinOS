@@ -61,7 +61,7 @@ void fault_handler(registers_t *r) {
 	if (interrupt_handlers[r->idt_index] != 0) {
 		interrupt_handlers[r->idt_index](r);
 	}
-	for (;;) asm("hlt");
+	for (;;) __asm__("hlt");
 }
 
 void irq_handler(registers_t *r) {

@@ -30,7 +30,7 @@ void multiboot_info(multiboot_info_t *mbt) {
 		tty_printf("multiboot_elf_sec: num = %u, size = 0x%x, addr = 0x%x, shndx = 0x%x\n", multiboot_elf_sec->num, multiboot_elf_sec->size, multiboot_elf_sec->addr, multiboot_elf_sec->shndx);
 	}
 	if (CHECK_FLAG(mbt->flags, 6)) {
-		uint32_t memory_installed;
+		uint32_t memory_installed = 0;
 		multiboot_memory_map_t *mmap;
 		tty_printf("mmap_addr = 0x%x, mmap_length = 0x%x\n", mbt->mmap_addr, mbt->mmap_length);
 		for (mmap = (multiboot_memory_map_t *) mbt->mmap_addr; (unsigned long) mmap < mbt->mmap_addr + mbt->mmap_length; mmap = (multiboot_memory_map_t *) ((unsigned long) mmap + mmap->size + sizeof (mmap->size))) {

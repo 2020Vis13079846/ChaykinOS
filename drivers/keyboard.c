@@ -26,7 +26,7 @@ void keyboard_wait_irq(void) {
 char scancode_to_keycode(kbd_char_t ch) {
 	if (!ch.exists || ch.release)
 		return 0;
-	for (int i = 0; i < 256; i++)
+	for (unsigned int i = 0; i < sizeof(keyboard_default)/sizeof(char_t); i++)
 		if (keyboard_default[i].scancode == ch.keycode)
 			return keyboard_default[i].keycode;
 	return 0;

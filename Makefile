@@ -8,9 +8,6 @@ LICENSE     = WTFPL
 
 # Makefile configuration
 
-BOOT_DIR    = boot
-INIT_DIR    = init
-KERNEL_DIR  = kernel
 BUILD_DIR   = build
 INCLUDE_DIR = include
 ISO_DIR     = $(BUILD_DIR)/iso
