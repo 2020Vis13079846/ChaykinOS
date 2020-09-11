@@ -16,6 +16,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install apt packages
-      run: sudo apt update && sudo apt install gcc-multilib gcc grub-pc-bin xorriso nasm -y
+      run: sudo apt update && sudo apt install gcc-multilib gcc grub-pc-bin xorriso nasm mtools -y
     - name: make
       run: make
