@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags: [ v* ]
+
+jobs:
+  release:
+    name: Release on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Build
+      run: |
+        sudo apt update && sudo apt install gcc-multilib gcc grub-pc-bin xorriso nasm mtools -y
+        make all
+        tar -zcvf chaykinos.tar.gz ChaykinOS*.iso
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}-${{ matrix.os }}
+        release_name: Release ${{ github.ref }}-${{ matrix.os }}
+        draft: false
+        prerelease: false
+    - name: Upload Release
+      id: upload-release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./chaykinos.tar.gz
+        asset_name: chaykinos.tar.gz
+        asset_content_type: application/tar.gz
