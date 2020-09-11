@@ -1,0 +1,21 @@
+name: build-workflow
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - name: install apt packages
+      run: apt update && apt install gcc-multilib gcc grub-pc-bin xorriso nasm -y
+    - name: make
+      run: make
