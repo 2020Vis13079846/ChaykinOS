@@ -11,6 +11,7 @@ LICENSE     = WTFPL
 BUILD_DIR   = build
 INCLUDE_DIR = include
 ISO_DIR     = $(BUILD_DIR)/iso
+Q           = @
 
 # Files
 
@@ -26,6 +27,7 @@ BINFORMAT   = elf
 
 # Compilers and emulators
 
+MSG         = echo
 CC          = gcc
 GAS         = as # AT&T-syntax assembler
 NASM        = nasm # Intel-syntax
@@ -34,7 +36,7 @@ GRUB        = grub-mkrescue
 
 # Compilers' and emulators' flags
 
-CFLAGS      = -m32 -std=gnu99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk -Wall -Wextra -pedantic-errors
+CFLAGS      = -m32 -std=c99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk -Wall -Wextra -pedantic-errors
 GASFLAGS    = --32
 NASMFLAGS   = -f $(BINFORMAT)32
 EMUFLAGS    = -m 256 -serial file:$(LOGFILE) -nic none
@@ -55,40 +57,42 @@ SOURCE_DIRS := boot init kernel lib mm drivers
 CRTBEGIN    := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtbegin.o`
 CRTEND      := `$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=crtend.o`
 
-all: #directories kernel grub iso
-	@echo $(SOURCES)
+all: directories kernel grub iso
 
 directories:
-	@mkdir -p $(BUILD_DIR)/bin
-	@mkdir -p $(BUILD_DIR)/iso/boot/grub
-	@mkdir -p $(patsubst %,"$(BUILD_DIR)/objs/%",$(SOURCE_DIRS))
+	$(Q) mkdir -p $(BUILD_DIR)/bin
+	$(Q) mkdir -p $(BUILD_DIR)/iso/boot/grub
+	$(Q) mkdir -p $(patsubst %,"$(BUILD_DIR)/objs/%",$(SOURCE_DIRS))
 
 kernel: $(OBJS)
-	@$(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) "$(CRTBEGIN)" $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) "$(CRTEND)"
+	$(Q) $(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) "$(CRTBEGIN)" $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) "$(CRTEND)"
 
 grub:
-	@echo "menuentry \"ChaykinOS $(VERSION)\" {" > $(BUILD_DIR)/iso/boot/grub/grub.cfg
-	@echo "	multiboot /boot/kernel.elf" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
-	@echo "	boot" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
-	@echo "}" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
+	$(Q) $(MSG) "menuentry \"ChaykinOS $(VERSION)\" {" > $(BUILD_DIR)/iso/boot/grub/grub.cfg
+	$(Q) $(MSG) "	multiboot /boot/kernel.elf" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
+	$(Q) $(MSG) "	boot" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
+	$(Q) $(MSG) "}" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
 
 iso: grub kernel
-	@cp $(BUILD_DIR)/bin/$(BINFILE) $(BUILD_DIR)/iso/boot/$(BINFILE)
-	@$(GRUB) -o $(ISOFILE) $(BUILD_DIR)/iso
+	$(Q) cp $(BUILD_DIR)/bin/$(BINFILE) $(BUILD_DIR)/iso/boot/$(BINFILE)
+	$(Q) $(GRUB) -o $(ISOFILE) $(BUILD_DIR)/iso
 
 run: iso
-	@$(EMU) -cdrom $(ISOFILE) $(EMUFLAGS)
+	$(Q) $(EMU) -cdrom $(ISOFILE) $(EMUFLAGS)
 
 clean:
-	@rm -rf $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(BUILD_DIR)
+	$(Q) rm -rf $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(BUILD_DIR)
 
 # Compilation
 
 %.o: %.c
-	@$(CC) -c $< -o $(BUILD_DIR)/objs/$@ $(CFLAGS)
+	$(Q) $(MSG) [Compile] $<
+	$(Q) $(CC) -c $< -o $(BUILD_DIR)/objs/$@ $(CFLAGS)
 
 %.o: %.s
-	@$(GAS) $< -o $(BUILD_DIR)/objs/$@ $(GASFLAGS)
+	$(Q) $(MSG) [Compile] $<
+	$(Q) $(GAS) $< -o $(BUILD_DIR)/objs/$@ $(GASFLAGS)
 
 %.o: %.asm
-	@$(NASM) $< -o $(BUILD_DIR)/objs/$@ $(NASMFLAGS)
+	$(Q) $(MSG) [Compile] $<
+	$(Q) $(NASM) $< -o $(BUILD_DIR)/objs/$@ $(NASMFLAGS)
