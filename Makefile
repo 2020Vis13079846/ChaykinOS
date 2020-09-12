@@ -65,7 +65,9 @@ directories:
 	$(Q) mkdir -p $(patsubst %,"$(BUILD_DIR)/objs/%",$(SOURCE_DIRS))
 
 kernel: $(OBJS)
+	$(Q) $(MSG) [Linking...]
 	$(Q) $(CC) -o $(BUILD_DIR)/bin/$(BINFILE) $(LDFLAGS) "$(CRTBEGIN)" $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) "$(CRTEND)"
+	$(Q) $(MSG) done
 
 grub:
 	$(Q) $(MSG) "menuentry \"ChaykinOS $(VERSION)\" {" > $(BUILD_DIR)/iso/boot/grub/grub.cfg
@@ -74,14 +76,18 @@ grub:
 	$(Q) $(MSG) "}" >> $(BUILD_DIR)/iso/boot/grub/grub.cfg
 
 iso: grub kernel
+	$(Q) $(MSG) [Generating ISO]...
 	$(Q) cp $(BUILD_DIR)/bin/$(BINFILE) $(BUILD_DIR)/iso/boot/$(BINFILE)
 	$(Q) $(GRUB) -o $(ISOFILE) $(BUILD_DIR)/iso
+	$(Q) $(MSG) done
 
 run: iso
 	$(Q) $(EMU) -cdrom $(ISOFILE) $(EMUFLAGS)
 
 clean:
+	$(Q) $(MSG) [Clean...]
 	$(Q) rm -rf $(patsubst %.o,./$(BUILD_DIR)/objs/%.o,$(OBJS)) $(BUILD_DIR)
+	$(Q) $(MSG) done
 
 # Compilation
 
