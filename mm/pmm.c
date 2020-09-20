@@ -24,11 +24,14 @@ static bool bitmap_test(int bit) {
 }
 
 int pmm_find_free_block(void) {
-	for (uint32_t i = 0; i < phys_block_count / 32; i++) {
-		uint32_t block = phys_memory_bitmap[i];
+	uint32_t i, block;
+	uint8_t j;
+	int bit;
+	for (i = 0; i < phys_block_count / 32; i++) {
+		block = phys_memory_bitmap[i];
 		if (block != 0xffffffff) {
-			for (uint8_t j = 0; j < 32; j++) {
-				int bit = 1 << j;
+			for (j = 0; j < 32; j++) {
+				bit = 1 << j;
 				if (!(bit & block)) {
 					return 32 * i + j;
 				}
@@ -39,13 +42,15 @@ int pmm_find_free_block(void) {
 }
 
 uint32_t pmm_block_alloc(void) {
+	int block;
+	uint32_t addr;
 	if (phys_block_count - phys_used_block_count <= 0)
 		return 0;
-	int block = pmm_find_free_block();
+	block = pmm_find_free_block();
 	if (block == -1)
 		return 0;
 	bitmap_set(block);
-	uint32_t addr = block * 4096;
+	addr = block * 4096;
 	phys_used_block_count++;
 	return addr;
 }
@@ -79,16 +84,18 @@ void pmm_chunk_free(uint64_t addr, uint64_t length) {
 	}
 }
 
-void pmm_free_memory(multiboot_info_t* mbt) {
-	for (multiboot_memory_map_t* mm = (multiboot_memory_map_t*)mbt->mmap_addr; (uint32_t)mm < mbt->mmap_addr + mbt->mmap_length; mm = (multiboot_memory_map_t*)((uint32_t)mm + mm->size + sizeof(mm->size))) {
+void pmm_free_memory(multiboot_info_t *mbt) {
+	multiboot_memory_map_t *mm;
+	for (mm = (multiboot_memory_map_t*)mbt->mmap_addr; (uint32_t)mm < mbt->mmap_addr + mbt->mmap_length; mm = (multiboot_memory_map_t*)((uint32_t)mm + mm->size + sizeof(mm->size))) {
 		if (mm->type == 1)
 			pmm_chunk_free(mm->addr, mm->len);
 	}
 	bitmap_set(0);
 }
 
-void pmm_memory_map(multiboot_info_t* mbt) {
-	for (multiboot_memory_map_t* mm = (multiboot_memory_map_t*)mbt->mmap_addr; (uint32_t)mm < mbt->mmap_addr + mbt->mmap_length; mm = (multiboot_memory_map_t*)((uint32_t)mm + mm->size + sizeof(mm->size))) {
+void pmm_memory_map(multiboot_info_t *mbt) {
+	multiboot_memory_map_t *mm;
+	for (mm = (multiboot_memory_map_t*)mbt->mmap_addr; (uint32_t)mm < mbt->mmap_addr + mbt->mmap_length; mm = (multiboot_memory_map_t*)((uint32_t)mm + mm->size + sizeof(mm->size))) {
 		if (mm->type == 1)
 			phys_available_memory_size += mm->len;
 		phys_installed_memory_size += mm->len;
@@ -99,7 +106,7 @@ void pmm_update_bitmap(uint32_t addr) {
 	phys_memory_bitmap = (uint32_t*) addr;
 }
 
-void pmm_init(multiboot_info_t* mbt) {
+void pmm_init(multiboot_info_t *mbt) {
 	pmm_memory_map(mbt);
 	phys_block_count = phys_installed_memory_size / 4096;
 	phys_used_block_count = phys_block_count;

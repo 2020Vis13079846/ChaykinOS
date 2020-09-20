@@ -24,9 +24,10 @@ void keyboard_wait_irq(void) {
 }
 
 char scancode_to_keycode(kbd_char_t ch) {
+	unsigned int i;
 	if (!ch.exists || ch.release)
 		return 0;
-	for (unsigned int i = 0; i < sizeof(keyboard_default)/sizeof(char_t); i++)
+	for (i = 0; i < sizeof(keyboard_default)/sizeof(char_t); i++)
 		if (keyboard_default[i].scancode == ch.keycode)
 			return keyboard_default[i].keycode;
 	return 0;
@@ -34,8 +35,8 @@ char scancode_to_keycode(kbd_char_t ch) {
 
 void keyboard_handler(__attribute__((unused)) registers_t *r) {
 	static kbd_char_t ch = {1, 0, 0};
-	irq_fried = true;
 	uint8_t scancode = inb(0x60);
+	irq_fried = true;
 	if (scancode > 0x80 && scancode < 0xe0) {
 		ch.release = 1;
 		scancode -= 0x80;
@@ -54,10 +55,11 @@ void keyboard_handler(__attribute__((unused)) registers_t *r) {
 
 uint8_t keyboard_getchar(void) {
 	uint8_t ret = 0;
+	kbd_char_t output = {0, 0, 0};
 	while (!ret) {
 		if (kdb_in == kbd_out)
 			keyboard_wait_irq();
-		ret = scancode_to_keycode((kdb_in <= kbd_out) ? (kbd_char_t){0, 0, 0} : keyboard_buffer[(kbd_out++) % 256]);
+		ret = scancode_to_keycode((kdb_in <= kbd_out) ? output : keyboard_buffer[(kbd_out++) % 256]);
 	}
 	if (feed)
 		tty_putchar(ret);
@@ -65,13 +67,15 @@ uint8_t keyboard_getchar(void) {
 }
 
 size_t keyboard_gets(char *buf, size_t n) {
-	char buffer[n];
-	for (size_t i = 0; i < n; i++)
+	char buffer[2048];
+	size_t i;
+	uint32_t ch = 0;
+	int fb;
+	for (i = 0; i < n; i++)
 		buffer[i] = 0;
 	memset(buf, 0, n);
 	index = 0, length = 0;
-	uint32_t ch = 0;
-	int fb = feed;
+	fb = feed;
 	feed = 0;
 	while (1) {
 		ch = keyboard_getchar();
@@ -89,13 +93,13 @@ size_t keyboard_gets(char *buf, size_t n) {
 				tty_putchar(ch);
 			if (ch == '\n') {
 				buffer[length] = 0;
-				for (size_t i = 0; i < n; i++) {
+				for (i = 0; i < n; i++) {
 					buf[i] = buffer[i];
 				}
 				return length;
 			}
-			for (size_t j = n; j > index-1; j--) {
-				buffer[j] = buffer[j-1];
+			for (i = n; i > index-1; i--) {
+				buffer[i] = buffer[i-1];
 			}
 			buffer[index++] = ch;
 			length++;

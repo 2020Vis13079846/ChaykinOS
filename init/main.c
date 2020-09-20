@@ -21,6 +21,7 @@
 extern void A20_init(void);
 
 void start_kernel(multiboot_info_t *mbt) {
+	int i;
 	tty_init();
 	tty_printf("TTY Initialized.\n");
 	gdt_init();
@@ -35,7 +36,7 @@ void start_kernel(multiboot_info_t *mbt) {
 	tty_printf("Physical Memory Manager Initialized.\n");
 	vmm_init();
 	tty_printf("Virtual Memory Manager Initialized.\n");
-	for (int i = 0; i < 4; i++) {
+	for (i = 0; i < 4; i++) {
 		serial_port_init(ports[i]);
 		tty_printf("COM%d Initialized.\n", i+1);
 	}

@@ -8,7 +8,8 @@ void debug_putchar(char c) {
 }
 
 void debug_write(char *data, size_t length) {
-	for (size_t i = 0; i < length; i++)
+	size_t i;
+	for (i = 0; i < length; i++)
 		debug_putchar(data[i]);
 }
 

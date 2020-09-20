@@ -18,8 +18,8 @@ void pit_sleep(uint32_t time) {
 }
 
 void pit_init(void) {
-	register_interrupt_handler(32, &pit_handler);
 	int divisor = 1193180 / PIT_FREQUENCY;
+	register_interrupt_handler(32, &pit_handler);
 	outb(0x43, 0x36);
 	outb(0x40, divisor & 0xff);
 	outb(0x40, divisor >> 8);

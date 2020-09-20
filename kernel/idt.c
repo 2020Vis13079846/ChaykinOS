@@ -71,12 +71,13 @@ void idt_set_gate(int index, uint64_t offset, uint16_t selector, uint8_t type) {
 }
 
 void idt_init(void) {
+	int i;
 	idt_ptr.limit = (sizeof(idt_entry_t)*IDT_NUM_ENTRIES)-1;
 	idt_ptr.base = (uint32_t)&idt_entries;
 
 	idt_flush(&idt_ptr);
 
-	for (int i = 0; i < IDT_NUM_ENTRIES; i++) {
+	for (i = 0; i < IDT_NUM_ENTRIES; i++) {
 		idt_entries[i].offset_high = 0;
 		idt_entries[i].offset_low = 0;
 		idt_entries[i].zero = 0;

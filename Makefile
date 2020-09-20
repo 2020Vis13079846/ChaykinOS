@@ -3,7 +3,7 @@
 # OS information
 
 AUTHOR      = Simon Chaykin
-VERSION     = 0.7.4
+VERSION     = 0.7.5
 LICENSE     = WTFPL
 
 # Makefile configuration
@@ -36,7 +36,7 @@ GRUB        = grub-mkrescue
 
 # Compilers' and emulators' flags
 
-CFLAGS      = -m32 -std=c99 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk -Wall -Wextra -pedantic-errors
+CFLAGS      = -m32 -std=c89 -ffreestanding -Wall -Wextra -I $(INCLUDE_DIR) -D __is_kernel -D __is_libk -Wall -Wextra -pedantic-errors
 GASFLAGS    = --32
 NASMFLAGS   = -f $(BINFORMAT)32
 EMUFLAGS    = -m 256 -serial file:$(LOGFILE) -nic none
